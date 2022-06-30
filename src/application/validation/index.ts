@@ -1,5 +1,6 @@
 export * from './validator'
 export * from './composite'
+export * from './builder'
 export * from './email'
 export * from './required'
 export * from './equals'
