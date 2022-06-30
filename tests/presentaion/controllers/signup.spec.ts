@@ -1,4 +1,5 @@
 import { SignUpController } from '@/presentation/controllers'
+import { RequiredFieldError } from '@/presentation/errors'
 
 describe('SignupController', () => {
   it('should return 400 if name is not provided', () => {
@@ -15,7 +16,7 @@ describe('SignupController', () => {
 
     expect(httpResponse).toEqual({
       statusCode: 400,
-      body: new Error('Missing param: name')
+      body: new RequiredFieldError('name')
     })
   })
 
@@ -33,7 +34,7 @@ describe('SignupController', () => {
 
     expect(httpResponse).toEqual({
       statusCode: 400,
-      body: new Error('Missing param: email')
+      body: new RequiredFieldError('email')
     })
   })
 })
