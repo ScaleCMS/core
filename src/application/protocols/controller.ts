@@ -1,5 +1,5 @@
-import { HttpRequest, HttpResponse } from '@/application/protocols'
+import { HttpResponse } from '@/application/helpers'
 
 export type Controller = {
-  handle: (httpRequest: HttpRequest) => HttpResponse | undefined
+  handle: (httpRequest: any) => HttpResponse | undefined
 }

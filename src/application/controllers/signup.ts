@@ -1,21 +1,21 @@
-import { Controller, HttpRequest, HttpResponse } from '@/application/protocols'
+import { Controller } from '@/application/protocols'
 import { EmailValidator, EqualsValidator, RequiredStringValidator, ValidationComposite } from '@/application/validation'
-import { badRequest } from '@/application/helpers'
+import { HttpResponse, badRequest } from '@/application/helpers'
 
 export class SignUpController implements Controller {
-  handle (httpRequest: HttpRequest): HttpResponse | undefined {
+  handle (httpRequest: any): HttpResponse | undefined {
     const error = this.validate(httpRequest)
     if (error) return badRequest(error)
   }
 
-  private validate (httpRequest: HttpRequest): Error | undefined {
+  private validate (httpRequest: any): Error | undefined {
     return new ValidationComposite([
-      new RequiredStringValidator(httpRequest.body.name, 'name'),
-      new RequiredStringValidator(httpRequest.body.email, 'email'),
-      new RequiredStringValidator(httpRequest.body.password, 'password'),
-      new RequiredStringValidator(httpRequest.body.passwordConfirmation, 'passwordConfirmation'),
-      new EqualsValidator(httpRequest.body.passwordConfirmation, httpRequest.body.password, 'passwordConfirmation'),
-      new EmailValidator(httpRequest.body.email)
+      new RequiredStringValidator(httpRequest.name, 'name'),
+      new RequiredStringValidator(httpRequest.email, 'email'),
+      new RequiredStringValidator(httpRequest.password, 'password'),
+      new RequiredStringValidator(httpRequest.passwordConfirmation, 'passwordConfirmation'),
+      new EqualsValidator(httpRequest.passwordConfirmation, httpRequest.password, 'passwordConfirmation'),
+      new EmailValidator(httpRequest.email)
     ]).validate()
   }
 }

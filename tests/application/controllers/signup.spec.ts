@@ -10,11 +10,9 @@ describe('SignupController', () => {
 
   it('should return 400 if name is not provided', () => {
     const httpRequest = {
-      body: {
-        email: 'any_email@mail.com',
-        password: 'any_password',
-        passwordConfirmation: 'any_password'
-      }
+      email: 'any_email@mail.com',
+      password: 'any_password',
+      passwordConfirmation: 'any_password'
     }
 
     const httpResponse = sut.handle(httpRequest)
@@ -27,11 +25,9 @@ describe('SignupController', () => {
 
   it('should return 400 if email is not provided', () => {
     const httpRequest = {
-      body: {
-        name: 'any_name',
-        password: 'any_password',
-        passwordConfirmation: 'any_password'
-      }
+      name: 'any_name',
+      password: 'any_password',
+      passwordConfirmation: 'any_password'
     }
 
     const httpResponse = sut.handle(httpRequest)
@@ -44,11 +40,9 @@ describe('SignupController', () => {
 
   it('should return 400 if password is not provided', () => {
     const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        passwordConfirmation: 'any_password'
-      }
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      passwordConfirmation: 'any_password'
     }
 
     const httpResponse = sut.handle(httpRequest)
@@ -61,11 +55,9 @@ describe('SignupController', () => {
 
   it('should return 400 if password confirmation is not provided', () => {
     const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'any_password'
-      }
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password'
     }
 
     const httpResponse = sut.handle(httpRequest)
@@ -78,12 +70,10 @@ describe('SignupController', () => {
 
   it('should return 400 if password confirmation fails', () => {
     const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'any_password',
-        passwordConfirmation: 'invalid_password'
-      }
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password',
+      passwordConfirmation: 'invalid_password'
     }
 
     const httpResponse = sut.handle(httpRequest)
@@ -96,12 +86,10 @@ describe('SignupController', () => {
 
   it('should return 400 if an invalid email is provided', () => {
     const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'invalid_email.com',
-        password: 'any_password',
-        passwordConfirmation: 'any_password'
-      }
+      name: 'any_name',
+      email: 'invalid_email.com',
+      password: 'any_password',
+      passwordConfirmation: 'any_password'
     }
 
     const httpResponse = sut.handle(httpRequest)
