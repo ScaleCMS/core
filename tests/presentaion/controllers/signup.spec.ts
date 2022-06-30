@@ -37,4 +37,22 @@ describe('SignupController', () => {
       body: new RequiredFieldError('email')
     })
   })
+
+  it('should return 400 if password is not provided', () => {
+    const sut = new SignUpController()
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        passwordConfirmation: 'any_password'
+      }
+    }
+
+    const httpResponse = sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual({
+      statusCode: 400,
+      body: new RequiredFieldError('password')
+    })
+  })
 })
