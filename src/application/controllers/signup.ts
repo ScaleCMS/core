@@ -1,6 +1,6 @@
-import { Controller, HttpRequest, HttpResponse } from '@/presentation/protocols'
-import { RequiredFieldError } from '@/presentation/errors'
-import { badRequest } from '@/presentation/helpers'
+import { Controller, HttpRequest, HttpResponse } from '@/application/protocols'
+import { RequiredFieldError } from '@/application/errors'
+import { badRequest } from '@/application/helpers'
 
 export class SignUpController implements Controller {
   handle (httpRequest: HttpRequest): HttpResponse | undefined {

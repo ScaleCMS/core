@@ -1,5 +1,5 @@
-import { SignUpController } from '@/presentation/controllers'
-import { RequiredFieldError } from '@/presentation/errors'
+import { SignUpController } from '@/application/controllers'
+import { RequiredFieldError } from '@/application/errors'
 
 describe('SignupController', () => {
   let sut: SignUpController
