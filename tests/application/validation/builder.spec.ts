@@ -1,4 +1,4 @@
-import { RequiredStringValidator, Validator } from '@/application/validation'
+import { EmailValidator, RequiredStringValidator, Validator } from '@/application/validation'
 
 class ValidationBuilder {
   private constructor (
@@ -16,6 +16,11 @@ class ValidationBuilder {
     return this
   }
 
+  email (): ValidationBuilder {
+    this.validators.push(new EmailValidator(this.value))
+    return this
+  }
+
   build (): Validator[] {
     return this.validators
   }
@@ -29,5 +34,14 @@ describe('ValidationBuilder', () => {
       .build()
 
     expect(validators).toEqual([new RequiredStringValidator('any_value', 'any_name')])
+  })
+
+  it('should return a EmailValidator', () => {
+    const validators = ValidationBuilder
+      .of({ value: 'any_value', fieldName: 'any_name' })
+      .email()
+      .build()
+
+    expect(validators).toEqual([new EmailValidator('any_value')])
   })
 })
