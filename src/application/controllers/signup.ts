@@ -1,5 +1,5 @@
 import { Controller, HttpRequest, HttpResponse } from '@/application/protocols'
-import { EmailValidator, RequiredStringValidator, ValidationComposite } from '@/application/validation'
+import { EmailValidator, EqualsValidator, RequiredStringValidator, ValidationComposite } from '@/application/validation'
 import { badRequest } from '@/application/helpers'
 
 export class SignUpController implements Controller {
@@ -14,6 +14,7 @@ export class SignUpController implements Controller {
       new RequiredStringValidator(httpRequest.body.email, 'email'),
       new RequiredStringValidator(httpRequest.body.password, 'password'),
       new RequiredStringValidator(httpRequest.body.passwordConfirmation, 'passwordConfirmation'),
+      new EqualsValidator(httpRequest.body.passwordConfirmation, httpRequest.body.password, 'passwordConfirmation'),
       new EmailValidator(httpRequest.body.email)
     ]).validate()
   }
