@@ -2,8 +2,13 @@ import { SignUpController } from '@/presentation/controllers'
 import { RequiredFieldError } from '@/presentation/errors'
 
 describe('SignupController', () => {
+  let sut: SignUpController
+
+  beforeEach(() => {
+    sut = new SignUpController()
+  })
+
   it('should return 400 if name is not provided', () => {
-    const sut = new SignUpController()
     const httpRequest = {
       body: {
         email: 'any_email@mail.com',
@@ -21,7 +26,6 @@ describe('SignupController', () => {
   })
 
   it('should return 400 if email is not provided', () => {
-    const sut = new SignUpController()
     const httpRequest = {
       body: {
         name: 'any_name',
@@ -39,7 +43,6 @@ describe('SignupController', () => {
   })
 
   it('should return 400 if password is not provided', () => {
-    const sut = new SignUpController()
     const httpRequest = {
       body: {
         name: 'any_name',
@@ -57,7 +60,6 @@ describe('SignupController', () => {
   })
 
   it('should return 400 if password confirmation is not provided', () => {
-    const sut = new SignUpController()
     const httpRequest = {
       body: {
         name: 'any_name',
