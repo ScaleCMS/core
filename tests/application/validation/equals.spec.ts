@@ -1,20 +1,5 @@
+import { EqualsValidator } from '@/application/validation'
 import { InvalidFieldError } from '@/application/errors'
-
-import validator from 'validator'
-
-class EqualsValidator {
-  constructor (
-    private readonly value: string,
-    private readonly compareValue: string,
-    private readonly fieldName: string
-  ) {}
-
-  validate (): Error | undefined {
-    if (!validator.equals(this.value, this.compareValue)) {
-      return new InvalidFieldError(this.fieldName)
-    }
-  }
-}
 
 describe('EqualsValidator', () => {
   it('should return InvalidFieldError if value is not equal', () => {
