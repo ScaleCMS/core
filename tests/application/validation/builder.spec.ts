@@ -1,4 +1,4 @@
-import { EmailValidator, RequiredStringValidator, Validator } from '@/application/validation'
+import { EmailValidator, EqualsValidator, RequiredStringValidator, Validator } from '@/application/validation'
 
 class ValidationBuilder {
   private constructor (
@@ -18,6 +18,11 @@ class ValidationBuilder {
 
   email (): ValidationBuilder {
     this.validators.push(new EmailValidator(this.value))
+    return this
+  }
+
+  equals (compareValue: string): ValidationBuilder {
+    this.validators.push(new EqualsValidator(this.value, compareValue, this.fieldName))
     return this
   }
 
@@ -43,5 +48,14 @@ describe('ValidationBuilder', () => {
       .build()
 
     expect(validators).toEqual([new EmailValidator('any_value')])
+  })
+
+  it('should return a EqualsValidator', () => {
+    const validators = ValidationBuilder
+      .of({ value: 'any_value', fieldName: 'any_name' })
+      .equals('compare_value')
+      .build()
+
+    expect(validators).toEqual([new EqualsValidator('any_value', 'compare_value', 'any_name')])
   })
 })
