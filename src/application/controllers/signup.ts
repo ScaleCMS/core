@@ -1,5 +1,5 @@
 import { Controller } from '@/application/protocols'
-import { EmailValidator, EqualsValidator, RequiredStringValidator, ValidationComposite } from '@/application/validation'
+import { ValidationBuilder as Builder, ValidationComposite } from '@/application/validation'
 import { HttpResponse, badRequest } from '@/application/helpers'
 
 export class SignUpController implements Controller {
@@ -10,12 +10,11 @@ export class SignUpController implements Controller {
 
   private validate (httpRequest: any): Error | undefined {
     return new ValidationComposite([
-      new RequiredStringValidator(httpRequest.name, 'name'),
-      new RequiredStringValidator(httpRequest.email, 'email'),
-      new RequiredStringValidator(httpRequest.password, 'password'),
-      new RequiredStringValidator(httpRequest.passwordConfirmation, 'passwordConfirmation'),
-      new EqualsValidator(httpRequest.passwordConfirmation, httpRequest.password, 'passwordConfirmation'),
-      new EmailValidator(httpRequest.email)
+      ...Builder.of({ value: httpRequest.name, fieldName: 'name' }).required().build(),
+      ...Builder.of({ value: httpRequest.email, fieldName: 'email' }).required().email().build(),
+      ...Builder.of({ value: httpRequest.password, fieldName: 'password' }).required().build(),
+      ...Builder.of({ value: httpRequest.passwordConfirmation, fieldName: 'passwordConfirmation' })
+        .required().equals(httpRequest.password).build()
     ]).validate()
   }
 }
