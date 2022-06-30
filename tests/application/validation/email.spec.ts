@@ -1,23 +1,5 @@
-import validator from 'validator'
-
-export class InvalidFieldError extends Error {
-  constructor (fieldName: string) {
-    super(`The field ${fieldName} is invalid`)
-    this.name = 'InvalidFieldError'
-  }
-}
-
-class EmailValidator {
-  constructor (
-    private readonly value: string
-  ) {}
-
-  validate (): Error | undefined {
-    if (!validator.isEmail(this.value)) {
-      return new InvalidFieldError('email')
-    }
-  }
-}
+import { EmailValidator } from '@/application/validation'
+import { InvalidFieldError } from '@/application/errors'
 
 describe('EmailValidator', () => {
   it('should return InvalidFieldError if email is invalid', () => {
