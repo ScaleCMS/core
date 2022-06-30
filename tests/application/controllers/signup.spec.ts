@@ -1,5 +1,5 @@
 import { SignUpController } from '@/application/controllers'
-import { RequiredFieldError } from '@/application/errors'
+import { InvalidFieldError, RequiredFieldError } from '@/application/errors'
 
 describe('SignupController', () => {
   let sut: SignUpController
@@ -73,6 +73,24 @@ describe('SignupController', () => {
     expect(httpResponse).toEqual({
       statusCode: 400,
       body: new RequiredFieldError('passwordConfirmation')
+    })
+  })
+
+  it('should return 400 if an invalid email is provided', () => {
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'invalid_email.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password'
+      }
+    }
+
+    const httpResponse = sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual({
+      statusCode: 400,
+      body: new InvalidFieldError('email')
     })
   })
 })
