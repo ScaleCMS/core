@@ -1,3 +1,5 @@
+import validator from 'validator'
+
 export class InvalidFieldError extends Error {
   constructor (fieldName: string) {
     super(`The field ${fieldName} is invalid`)
@@ -11,7 +13,9 @@ class EmailValidator {
   ) {}
 
   validate (): Error | undefined {
-    return new InvalidFieldError('email')
+    if (!validator.isEmail(this.value)) {
+      return new InvalidFieldError('email')
+    }
   }
 }
 
@@ -22,5 +26,13 @@ describe('EmailValidator', () => {
     const error = sut.validate()
 
     expect(error).toEqual(new InvalidFieldError('email'))
+  })
+
+  it('should return undefined if email is valid', () => {
+    const sut = new EmailValidator('valid@mail.com')
+
+    const error = sut.validate()
+
+    expect(error).toBeUndefined()
   })
 })
