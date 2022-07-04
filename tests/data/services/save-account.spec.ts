@@ -49,12 +49,14 @@ describe('SaveAccountService', () => {
   })
 
   it('should call SaveUserAccount with correct params', async () => {
+    crypto.hash.mockResolvedValue('hashed_password')
+
     await sut.perform({ name, email, password })
 
     expect(userRepository.save).toBeCalledWith({
       name: 'any_name',
       email: 'any_email@mail.com',
-      password: 'any_password'
+      password: 'hashed_password'
     })
     expect(userRepository.save).toBeCalledTimes(1)
   })

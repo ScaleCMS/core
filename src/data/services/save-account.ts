@@ -9,12 +9,16 @@ export class SaveAccountService {
     private readonly crypto: Hasher
   ) {}
 
-  async perform (params: SaveAccount.Params): Promise<EmailInUseError | void> {
-    const user = await this.userRepository.load({ email: params.email })
+  async perform ({ name, email, password }: SaveAccount.Params): Promise<EmailInUseError | void> {
+    const user = await this.userRepository.load({ email })
     if (user !== undefined) {
       return new EmailInUseError()
     }
-    await this.crypto.hash({ key: params.password })
-    await this.userRepository.save(params)
+    const hashedPassword = await this.crypto.hash({ key: password })
+    await this.userRepository.save({
+      name,
+      email,
+      password: hashedPassword
+    })
   }
 }
