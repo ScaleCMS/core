@@ -1,11 +1,13 @@
 import { SaveAccountService } from '@/data/services'
 import { LoadUserAccount, SaveUserAccount } from '@/data/contracts/repos'
+import { Hasher } from '@/data/contracts/crypto'
 import { EmailInUseError } from '@/domain/errors'
 
 import { MockProxy, mock } from 'jest-mock-extended'
 
 describe('SaveAccountService', () => {
   let userRepository: MockProxy<LoadUserAccount & SaveUserAccount>
+  let crypto: MockProxy<Hasher>
   let sut: SaveAccountService
   let name: string
   let email: string
@@ -19,7 +21,9 @@ describe('SaveAccountService', () => {
 
   beforeEach(() => {
     userRepository = mock()
-    sut = new SaveAccountService(userRepository)
+    userRepository.load.mockResolvedValue(undefined)
+    crypto = mock()
+    sut = new SaveAccountService(userRepository, crypto)
   })
 
   it('should call LoadUserAccount with correct params', async () => {
@@ -37,9 +41,14 @@ describe('SaveAccountService', () => {
     expect(result).toEqual(new EmailInUseError())
   })
 
-  it('should call SaveUserAccount when LoadUserAccount returns undefined', async () => {
-    userRepository.load.mockResolvedValueOnce(undefined)
+  it('should call Hasher with correct params', async () => {
+    await sut.perform({ name, email, password })
 
+    expect(crypto.hash).toBeCalledWith({ key: 'any_password' })
+    expect(crypto.hash).toBeCalledTimes(1)
+  })
+
+  it('should call SaveUserAccount with correct params', async () => {
     await sut.perform({ name, email, password })
 
     expect(userRepository.save).toBeCalledWith({
