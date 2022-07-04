@@ -60,4 +60,14 @@ describe('SaveAccountService', () => {
     })
     expect(userRepository.save).toBeCalledTimes(1)
   })
+
+  it('should return saved user id on success', async () => {
+    userRepository.save.mockResolvedValueOnce({ id: 'any_id' })
+
+    const result = await sut.perform({ name, email, password })
+
+    expect(result).toEqual({
+      id: 'any_id'
+    })
+  })
 })
