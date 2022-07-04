@@ -11,5 +11,5 @@ namespace CreateAccount {
     password: string
   }
 
-  export type Result = undefined | EmailInUseError
+  export type Result = { id: string } | EmailInUseError
 }
