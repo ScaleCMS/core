@@ -70,4 +70,28 @@ describe('SaveAccountService', () => {
       id: 'any_id'
     })
   })
+
+  it('should rethrow if LoadUserAccount throws', async () => {
+    userRepository.load.mockRejectedValue(new Error('load_error'))
+
+    const promise = sut.perform({ name, email, password })
+
+    await expect(promise).rejects.toThrow(new Error('load_error'))
+  })
+
+  it('should rethrow if SaveUserAccount throws', async () => {
+    userRepository.save.mockRejectedValue(new Error('save_error'))
+
+    const promise = sut.perform({ name, email, password })
+
+    await expect(promise).rejects.toThrow(new Error('save_error'))
+  })
+
+  it('should rethrow if Hasher throws', async () => {
+    crypto.hash.mockRejectedValue(new Error('hash_error'))
+
+    const promise = sut.perform({ name, email, password })
+
+    await expect(promise).rejects.toThrow(new Error('hash_error'))
+  })
 })
