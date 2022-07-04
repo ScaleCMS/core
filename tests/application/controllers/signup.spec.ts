@@ -1,5 +1,5 @@
 import { SignUpController } from '@/application/controllers'
-import { InvalidFieldError, RequiredFieldError } from '@/application/errors'
+import { EmailValidator, EqualsValidator, RequiredStringValidator } from '@/application/validation'
 import { CreateAccount } from '@/domain/use-cases'
 
 import { mock, MockProxy } from 'jest-mock-extended'
@@ -7,122 +7,40 @@ import { mock, MockProxy } from 'jest-mock-extended'
 describe('SignupController', () => {
   let sut: SignUpController
   let createAccount: MockProxy<CreateAccount>
+  let name: string
+  let email: string
+  let password: string
+  let passwordConfirmation: string
 
   beforeAll(() => {
     createAccount = mock()
+    name = 'any_name'
+    email = 'any_email@mail.com'
+    password = 'any_password'
+    passwordConfirmation = 'any_password'
   })
 
   beforeEach(() => {
     sut = new SignUpController(createAccount)
   })
 
-  it('should return 400 if name is not provided', async () => {
-    const httpRequest = {
-      email: 'any_email@mail.com',
-      password: 'any_password',
-      passwordConfirmation: 'any_password'
-    }
+  it('should build validators correctly', async () => {
+    const validators = sut.buildValidators({ name, email, password, passwordConfirmation })
 
-    const httpResponse = await sut.handle(httpRequest)
-
-    expect(httpResponse).toEqual({
-      statusCode: 400,
-      body: new RequiredFieldError('name')
-    })
-  })
-
-  it('should return 400 if email is not provided', async () => {
-    const httpRequest = {
-      name: 'any_name',
-      password: 'any_password',
-      passwordConfirmation: 'any_password'
-    }
-
-    const httpResponse = await sut.handle(httpRequest)
-
-    expect(httpResponse).toEqual({
-      statusCode: 400,
-      body: new RequiredFieldError('email')
-    })
-  })
-
-  it('should return 400 if password is not provided', async () => {
-    const httpRequest = {
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      passwordConfirmation: 'any_password'
-    }
-
-    const httpResponse = await sut.handle(httpRequest)
-
-    expect(httpResponse).toEqual({
-      statusCode: 400,
-      body: new RequiredFieldError('password')
-    })
-  })
-
-  it('should return 400 if password confirmation is not provided', async () => {
-    const httpRequest = {
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      password: 'any_password'
-    }
-
-    const httpResponse = await sut.handle(httpRequest)
-
-    expect(httpResponse).toEqual({
-      statusCode: 400,
-      body: new RequiredFieldError('passwordConfirmation')
-    })
-  })
-
-  it('should return 400 if password confirmation fails', async () => {
-    const httpRequest = {
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      password: 'any_password',
-      passwordConfirmation: 'invalid_password'
-    }
-
-    const httpResponse = await sut.handle(httpRequest)
-
-    expect(httpResponse).toEqual({
-      statusCode: 400,
-      body: new InvalidFieldError('passwordConfirmation')
-    })
-  })
-
-  it('should return 400 if an invalid email is provided', async () => {
-    const httpRequest = {
-      name: 'any_name',
-      email: 'invalid_email.com',
-      password: 'any_password',
-      passwordConfirmation: 'any_password'
-    }
-
-    const httpResponse = await sut.handle(httpRequest)
-
-    expect(httpResponse).toEqual({
-      statusCode: 400,
-      body: new InvalidFieldError('email')
-    })
+    expect(validators).toEqual([
+      new RequiredStringValidator(name, 'name'),
+      new RequiredStringValidator(email, 'email'),
+      new EmailValidator(email),
+      new RequiredStringValidator(password, 'password'),
+      new RequiredStringValidator(passwordConfirmation, 'passwordConfirmation'),
+      new EqualsValidator(password, passwordConfirmation, 'passwordConfirmation')
+    ])
   })
 
   it('should call CreateAccount with correct params', async () => {
-    const httpRequest = {
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      password: 'any_password',
-      passwordConfirmation: 'any_password'
-    }
+    await sut.handle({ name, email, password, passwordConfirmation })
 
-    await sut.handle(httpRequest)
-
-    expect(createAccount.perform).toBeCalledWith({
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      password: 'any_password',
-      passwordConfirmation: 'any_password'
-    })
+    expect(createAccount.perform).toBeCalledWith({ name, email, password, passwordConfirmation })
+    expect(createAccount.perform).toBeCalledTimes(1)
   })
 })
