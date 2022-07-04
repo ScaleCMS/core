@@ -1,6 +1,6 @@
 import { Controller } from '@/application/controllers'
 import { badRequest, HttpResponse, ok } from '@/application/helpers'
-import { CreateAccount } from '@/domain/use-cases'
+import { SaveAccount } from '@/domain/features'
 import { EmailInUseError } from '@/domain/errors'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
 
@@ -16,12 +16,12 @@ type Model = Error | {
 }
 
 export class SignUpController extends Controller {
-  constructor (private readonly createAccount: CreateAccount) {
+  constructor (private readonly saveAccount: SaveAccount) {
     super()
   }
 
   async perform (httpRequest: HttpRequest): Promise<HttpResponse<Model>> {
-    const user = await this.createAccount.perform(httpRequest)
+    const user = await this.saveAccount.perform(httpRequest)
     if (!(user instanceof EmailInUseError)) {
       return ok({
         id: user.id

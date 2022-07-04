@@ -1,22 +1,22 @@
 import { Controller, SignUpController } from '@/application/controllers'
 import { EmailValidator, EqualsValidator, RequiredStringValidator } from '@/application/validation'
 import { EmailInUseError } from '@/domain/errors'
-import { CreateAccount } from '@/domain/use-cases'
+import { SaveAccount } from '@/domain/features'
 import { ServerError } from '@/application/errors'
 
 import { mock, MockProxy } from 'jest-mock-extended'
 
 describe('SignupController', () => {
   let sut: SignUpController
-  let createAccount: MockProxy<CreateAccount>
+  let saveAccount: MockProxy<SaveAccount>
   let name: string
   let email: string
   let password: string
   let passwordConfirmation: string
 
   beforeAll(() => {
-    createAccount = mock()
-    createAccount.perform.mockResolvedValue({ id: 'any_id' })
+    saveAccount = mock()
+    saveAccount.perform.mockResolvedValue({ id: 'any_id' })
     name = 'any_name'
     email = 'any_email@mail.com'
     password = 'any_password'
@@ -24,7 +24,7 @@ describe('SignupController', () => {
   })
 
   beforeEach(() => {
-    sut = new SignUpController(createAccount)
+    sut = new SignUpController(saveAccount)
   })
 
   it('should extend Controller', async () => {
@@ -44,15 +44,15 @@ describe('SignupController', () => {
     ])
   })
 
-  it('should call CreateAccount with correct params', async () => {
+  it('should call SaveAccount with correct params', async () => {
     await sut.handle({ name, email, password, passwordConfirmation })
 
-    expect(createAccount.perform).toBeCalledWith({ name, email, password, passwordConfirmation })
-    expect(createAccount.perform).toBeCalledTimes(1)
+    expect(saveAccount.perform).toBeCalledWith({ name, email, password, passwordConfirmation })
+    expect(saveAccount.perform).toBeCalledTimes(1)
   })
 
   it('should return 400 if email is already in use', async () => {
-    createAccount.perform.mockResolvedValueOnce(new EmailInUseError())
+    saveAccount.perform.mockResolvedValueOnce(new EmailInUseError())
 
     const httpResponse = await sut.handle({ name, email, password, passwordConfirmation })
 
@@ -64,7 +64,7 @@ describe('SignupController', () => {
 
   it('should return 500 on infra error', async () => {
     const error = new Error('infra_error')
-    createAccount.perform.mockRejectedValueOnce(error)
+    saveAccount.perform.mockRejectedValueOnce(error)
 
     const httpResponse = await sut.handle({ name, email, password, passwordConfirmation })
 

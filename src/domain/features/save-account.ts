@@ -1,10 +1,10 @@
 import { EmailInUseError } from '@/domain/errors'
 
-export interface CreateAccount {
-  perform: (params: CreateAccount.Params) => Promise<CreateAccount.Result>
+export interface SaveAccount {
+  perform: (params: SaveAccount.Params) => Promise<SaveAccount.Result>
 }
 
-namespace CreateAccount {
+export namespace SaveAccount {
   export type Params = {
     name: string
     email: string
