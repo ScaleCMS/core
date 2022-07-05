@@ -1,6 +1,7 @@
 import { LoadUserAccount } from '@/data/contracts/repos'
 
 import mongoose, { Schema } from 'mongoose'
+import { MongoMemoryServer } from 'mongodb-memory-server'
 
 class MongoUserAccountRepository implements LoadUserAccount {
   async load (params: LoadUserAccount.Params): Promise<LoadUserAccount.Result> {
@@ -21,17 +22,25 @@ const MongoUserModel = mongoose.model('User', new Schema({
   }
 }, { timestamps: true }))
 
+const makeFakeDb = async (): Promise<MongoMemoryServer> => {
+  const server = await MongoMemoryServer.create()
+  await mongoose.connect(server.getUri(), {
+    dbName: 'scalecms-test'
+  })
+  return server
+}
+
 describe('MongoUserAccountRepository', () => {
   describe('load', () => {
     let sut: MongoUserAccountRepository
+    let server: MongoMemoryServer
 
     beforeAll(async () => {
-      await mongoose.connect('mongodb+srv://root:CQEZQWC7PH1Zpr33@cluster0.d99ds.mongodb.net/?retryWrites=true&w=majority', {
-        dbName: 'scalecms-test'
-      })
+      server = await makeFakeDb()
     })
 
     afterAll(async () => {
+      await server.stop()
       await mongoose.disconnect()
     })
 
