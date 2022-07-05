@@ -44,7 +44,7 @@ describe('SaveAccountService', () => {
   it('should call Hasher with correct params', async () => {
     await sut.perform({ name, email, password })
 
-    expect(crypto.hash).toBeCalledWith({ key: 'any_password' })
+    expect(crypto.hash).toBeCalledWith({ plaintext: 'any_password' })
     expect(crypto.hash).toBeCalledTimes(1)
   })
 

@@ -3,7 +3,7 @@ export interface Hasher {
 }
 
 export namespace Hasher {
-  export type Params = { key: string }
+  export type Params = { plaintext: string }
 
   export type Result = string
 }

@@ -14,7 +14,7 @@ export class SaveAccountService implements SaveAccount {
     if (user !== undefined) {
       return new EmailInUseError()
     }
-    const hashedPassword = await this.crypto.hash({ key: password })
+    const hashedPassword = await this.crypto.hash({ plaintext: password })
     return await this.userRepository.save({
       name,
       email,
