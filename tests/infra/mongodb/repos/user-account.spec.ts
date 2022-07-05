@@ -6,24 +6,24 @@ import mongoose from 'mongoose'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 
 describe('MongoUserAccountRepository', () => {
+  let sut: MongoUserAccountRepository
+  let server: MongoMemoryServer
+
+  beforeAll(async () => {
+    server = await makeFakeDb()
+  })
+
+  afterAll(async () => {
+    await server.stop()
+    await mongoose.disconnect()
+  })
+
+  beforeEach(async () => {
+    sut = new MongoUserAccountRepository()
+    await mongoose.connection.dropDatabase()
+  })
+
   describe('load', () => {
-    let sut: MongoUserAccountRepository
-    let server: MongoMemoryServer
-
-    beforeAll(async () => {
-      server = await makeFakeDb()
-    })
-
-    afterAll(async () => {
-      await server.stop()
-      await mongoose.disconnect()
-    })
-
-    beforeEach(async () => {
-      sut = new MongoUserAccountRepository()
-      await mongoose.connection.dropDatabase()
-    })
-
     it('should return an account if email exists', async () => {
       await MongoUserModel.create({ email: 'any_email' })
 
