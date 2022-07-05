@@ -29,13 +29,26 @@ describe('MongoUserAccountRepository', () => {
 
       const account = await sut.load({ email: 'any_email' })
 
-      expect(account).toEqual({ id: account?.id })
+      expect(account?.id).toBeDefined()
     })
 
     it('should return undefined if email does not exists', async () => {
       const account = await sut.load({ email: 'any_email' })
 
       expect(account).toBeUndefined()
+    })
+  })
+
+  describe('save', () => {
+    it('should create an account', async () => {
+      const { id } = await sut.save({
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_password'
+      })
+      const account = await MongoUserModel.findOne({ email: 'any_email' }).exec()
+
+      expect(id).toEqual(account?.id)
     })
   })
 })
