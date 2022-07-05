@@ -1,5 +1,5 @@
 import { MongoUserAccountRepository } from '@/infra/mongodb/repos'
-import { MongoUserModel } from '@/infra/mongodb/entities'
+import { MongoUserModel } from '@/infra/mongodb/models'
 import { makeFakeDb } from '@/tests/infra/mongodb/mocks'
 
 import mongoose from 'mongoose'

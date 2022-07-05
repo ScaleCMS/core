@@ -1,5 +1,5 @@
 import { LoadUserAccount } from '@/data/contracts/repos'
-import { MongoUserModel } from '@/infra/mongodb/entities'
+import { MongoUserModel } from '@/infra/mongodb/models'
 
 export class MongoUserAccountRepository implements LoadUserAccount {
   async load (params: LoadUserAccount.Params): Promise<LoadUserAccount.Result> {
