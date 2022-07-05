@@ -22,32 +22,34 @@ const MongoUserModel = mongoose.model('User', new Schema({
 }, { timestamps: true }))
 
 describe('MongoUserAccountRepository', () => {
-  afterAll(async () => {
-    await mongoose.disconnect()
-  })
-
   describe('load', () => {
-    it('should return an account if email exists', async () => {
+    let sut: MongoUserAccountRepository
+
+    beforeAll(async () => {
       await mongoose.connect('mongodb+srv://root:CQEZQWC7PH1Zpr33@cluster0.d99ds.mongodb.net/?retryWrites=true&w=majority', {
         dbName: 'scalecms-test'
       })
-      await mongoose.connection.dropDatabase()
-      await MongoUserModel.create({ email: 'existing_email' })
-      const sut = new MongoUserAccountRepository()
+    })
 
-      const account = await sut.load({ email: 'existing_email' })
+    afterAll(async () => {
+      await mongoose.disconnect()
+    })
+
+    beforeEach(async () => {
+      sut = new MongoUserAccountRepository()
+      await mongoose.connection.dropDatabase()
+    })
+
+    it('should return an account if email exists', async () => {
+      await MongoUserModel.create({ email: 'any_email' })
+
+      const account = await sut.load({ email: 'any_email' })
 
       expect(account).toEqual({ id: account?.id })
     })
 
     it('should return undefined if email does not exists', async () => {
-      await mongoose.connect('mongodb+srv://root:CQEZQWC7PH1Zpr33@cluster0.d99ds.mongodb.net/?retryWrites=true&w=majority', {
-        dbName: 'scalecms-test'
-      })
-      await mongoose.connection.dropDatabase()
-      const sut = new MongoUserAccountRepository()
-
-      const account = await sut.load({ email: 'new_email' })
+      const account = await sut.load({ email: 'any_email' })
 
       expect(account).toBeUndefined()
     })
