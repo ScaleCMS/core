@@ -1,16 +1,9 @@
 import { MongoUserAccountRepository } from '@/infra/mongodb/repos'
 import { MongoUserModel } from '@/infra/mongodb/entities'
+import { makeFakeDb } from '@/tests/infra/mongodb/mocks'
 
 import mongoose from 'mongoose'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-
-const makeFakeDb = async (): Promise<MongoMemoryServer> => {
-  const server = await MongoMemoryServer.create()
-  await mongoose.connect(server.getUri(), {
-    dbName: 'scalecms-test'
-  })
-  return server
-}
 
 describe('MongoUserAccountRepository', () => {
   describe('load', () => {
