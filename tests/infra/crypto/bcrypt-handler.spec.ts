@@ -31,9 +31,18 @@ describe('BcryptHandler', () => {
     expect(fakeBcrypt.hash).toHaveBeenCalledWith('any_plaintext', 12)
   })
 
-  it('should return a generated hash', async () => {
+  it('should return a hash', async () => {
     const hash = await sut.hash({ plaintext: 'any_plaintext' })
 
     expect(hash).toBe('any_value')
+  })
+
+  it('should rethrow if hash throws', async () => {
+    const error = new Error('bcrypt_error')
+    fakeBcrypt.hash.mockImplementationOnce(() => { throw error })
+
+    const promise = sut.hash({ plaintext: 'any_plaintext' })
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
