@@ -39,5 +39,17 @@ describe('MongoUserAccountRepository', () => {
 
       expect(account).toEqual({ id: account?.id })
     })
+
+    it('should return undefined if email does not exists', async () => {
+      await mongoose.connect('mongodb+srv://root:CQEZQWC7PH1Zpr33@cluster0.d99ds.mongodb.net/?retryWrites=true&w=majority', {
+        dbName: 'scalecms-test'
+      })
+      await mongoose.connection.dropDatabase()
+      const sut = new MongoUserAccountRepository()
+
+      const account = await sut.load({ email: 'new_email' })
+
+      expect(account).toBeUndefined()
+    })
   })
 })
