@@ -1,26 +1,8 @@
-import { LoadUserAccount } from '@/data/contracts/repos'
+import { MongoUserAccountRepository } from '@/infra/mongodb/repos'
+import { MongoUserModel } from '@/infra/mongodb/entities'
 
-import mongoose, { Schema } from 'mongoose'
+import mongoose from 'mongoose'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-
-class MongoUserAccountRepository implements LoadUserAccount {
-  async load (params: LoadUserAccount.Params): Promise<LoadUserAccount.Result> {
-    const mongoUser = await MongoUserModel.findOne({ email: params.email })
-    if (mongoUser !== null) {
-      return {
-        id: mongoUser.id
-      }
-    }
-  }
-}
-
-const MongoUserModel = mongoose.model('User', new Schema({
-  email: String,
-  password: String,
-  profile: {
-    name: String
-  }
-}, { timestamps: true }))
 
 const makeFakeDb = async (): Promise<MongoMemoryServer> => {
   const server = await MongoMemoryServer.create()
