@@ -2,8 +2,8 @@ import { LoadUserAccount, SaveUserAccount } from '@/data/contracts/repos'
 import { MongoUserModel } from '@/infra/mongodb/models'
 
 export class MongoUserAccountRepository implements LoadUserAccount, SaveUserAccount {
-  async load (params: LoadUserAccount.Params): Promise<LoadUserAccount.Result> {
-    const mongoUser = await MongoUserModel.findOne({ email: params.email })
+  async load ({ email }: LoadUserAccount.Params): Promise<LoadUserAccount.Result> {
+    const mongoUser = await MongoUserModel.findOne({ email })
     if (mongoUser !== null) {
       return {
         id: mongoUser.id
@@ -11,12 +11,12 @@ export class MongoUserAccountRepository implements LoadUserAccount, SaveUserAcco
     }
   }
 
-  async save (params: SaveUserAccount.Params): Promise<SaveUserAccount.Result> {
+  async save ({ email, password, name }: SaveUserAccount.Params): Promise<SaveUserAccount.Result> {
     const mongoUser = await MongoUserModel.create({
-      email: params.email,
-      password: params.password,
+      email,
+      password,
       profile: {
-        name: params.name
+        name
       }
     })
     return {
