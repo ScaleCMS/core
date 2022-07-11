@@ -14,8 +14,8 @@ describe('MongoUserAccountRepository', () => {
   })
 
   afterAll(async () => {
-    await server.stop()
     await mongoose.disconnect()
+    await server.stop()
   })
 
   beforeEach(async () => {
