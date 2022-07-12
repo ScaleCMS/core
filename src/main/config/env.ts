@@ -1,4 +1,12 @@
+import dotenv from 'dotenv'
+
+dotenv.config()
+
 export const env = {
-  bcryptSalt: Number(process.env.BCRYPT_SALT) ?? 10,
-  port: process.env.PORT ?? 8080
+  database: {
+    url: process.env.DB_URL ?? '',
+    name: process.env.DB_NAME ?? 'scalecms'
+  },
+  port: process.env.PORT ?? 8080,
+  bcryptSalt: Number(process.env.BCRYPT_SALT) ?? 10
 }
