@@ -1,21 +1,17 @@
 import { MongoUserAccountRepository } from '@/infra/mongodb/repos'
 import { MongoUserModel } from '@/infra/mongodb/models'
-import { makeFakeDb } from '@/tests/infra/mongodb/mocks'
 
 import mongoose from 'mongoose'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 
 describe('MongoUserAccountRepository', () => {
   let sut: MongoUserAccountRepository
-  let server: MongoMemoryServer
 
   beforeAll(async () => {
-    server = await makeFakeDb()
+    await mongoose.connect(process.env.DB_TEST_URL ?? '')
   })
 
   afterAll(async () => {
     await mongoose.disconnect()
-    await server.stop()
   })
 
   beforeEach(async () => {

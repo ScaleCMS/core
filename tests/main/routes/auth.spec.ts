@@ -1,23 +1,18 @@
 import { app } from '@/main/config/app'
-import { makeFakeDb } from '@/tests/infra/mongodb/mocks'
 import { MongoUserModel } from '@/infra/mongodb/models'
 import { EmailInUseError } from '@/domain/errors'
 
 import request from 'supertest'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
 
 describe('Auth Routes', () => {
   describe('POST /signup', () => {
-    let server: MongoMemoryServer
-
     beforeAll(async () => {
-      server = await makeFakeDb()
+      await mongoose.connect(process.env.DB_TEST_URL ?? '')
     })
 
     afterAll(async () => {
       await mongoose.disconnect()
-      await server.stop()
     })
 
     beforeEach(async () => {
@@ -43,7 +38,9 @@ describe('Auth Routes', () => {
     })
 
     it('should return 400 with EmailInUseError', async () => {
-      jest.spyOn(MongoUserModel, 'findOne').mockReturnValueOnce({ _id: 'any_id' } as any)
+      jest
+        .spyOn(MongoUserModel, 'findOne')
+        .mockReturnValueOnce({ _id: 'any_id' } as any)
 
       const { status, body } = await request(app)
         .post('/api/auth/signup')
